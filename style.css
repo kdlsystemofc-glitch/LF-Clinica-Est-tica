@@ -1,0 +1,2059 @@
+/* ==========================================================================
+   LF CLÍNICA ESTÉTICA — RESPONSIVE EXPERIENCE RECONSTRUCTION (PHASE 07)
+   Dedicated Viewport Design: 1440px -> 1024px -> 768px -> 390px
+   ========================================================================== */
+
+:root {
+  /* COLOR SYSTEM TOKENS */
+  --color-bg-primary: #FAF9F6;
+  --color-bg-secondary: #F2EEE8;
+  --color-surface: #FFFFFF;
+  --color-primary: #0B2B7A; /* Cobalt Imperial Client Blue */
+  --color-primary-hover: #061D57;
+  --color-accent: #C5A880; /* Brushed Champagne Gold */
+  --color-accent-light: #F4EFEB;
+  --color-text-main: #141414;
+  --color-text-muted: #635F59;
+  --color-border: #E5E0D6;
+  --color-border-dark: #141414;
+  --color-status-active: #10B981;
+
+  /* TYPOGRAPHY TOKENS */
+  --font-display: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-editorial: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* MOTION & ELEVATION TOKENS */
+  --ease-elastic-noble: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.25s ease;
+  --transition-smooth: 0.55s var(--ease-elastic-noble);
+  --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 8px 24px rgba(11, 43, 122, 0.06);
+  --shadow-card-hover: 0 16px 36px rgba(11, 43, 122, 0.12);
+  --shadow-portal: 0 16px 36px rgba(11, 43, 122, 0.09);
+  --shadow-portal-hover: 0 20px 48px rgba(11, 43, 122, 0.16);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-main);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-main);
+  min-height: 100vh;
+  line-height: 1.4;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   SCROLL REVEAL & STAGGER ENGINE
+   ========================================================================== */
+
+.anim-fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: heroFadeIn 0.85s var(--ease-elastic-noble) forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.85s var(--ease-elastic-noble), transform 0.85s var(--ease-elastic-noble);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   LAYOUT STRUCTURE
+   ========================================================================== */
+
+.page-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.content-limit {
+  width: 100%;
+  max-width: 1380px;
+  padding: 0 40px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   NAVIGATION (TOP DESKTOP / DOCKED BOTTOM MOBILE)
+   ========================================================================== */
+
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: rgba(250, 249, 246, 0.94);
+  backdrop-filter: blur(16px);
+  padding: 20px 0;
+  transition: transform 0.45s var(--ease-elastic-noble), border-color 0.4s ease, padding 0.4s ease, background-color 0.4s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.site-nav.floating {
+  border-bottom-color: var(--color-border);
+  padding: 14px 0;
+  background-color: rgba(250, 249, 246, 0.98);
+}
+
+.site-nav.hidden {
+  transform: translateY(-115%);
+}
+
+.nav-inner {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.locale-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.lang-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+}
+
+.lang-label.active {
+  color: var(--color-primary);
+}
+
+.toggle-track {
+  width: 32px;
+  height: 17px;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-text-main);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  background: var(--color-surface);
+  transition: var(--transition-fast);
+}
+
+.toggle-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-text-main);
+  transition: transform var(--transition-smooth);
+}
+
+.toggle-track.toggled .toggle-thumb {
+  transform: translateX(15px);
+}
+
+.clinic-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: rgba(11, 43, 122, 0.04);
+  border: 1px solid rgba(11, 43, 122, 0.12);
+  border-radius: 999px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-status-active);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.status-text {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.nav-cta {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border: 1.5px solid var(--color-text-main);
+  border-radius: 20px 0;
+  transition: all var(--transition-fast);
+}
+
+.nav-cta:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(11, 43, 122, 0.24);
+}
+
+.cta-arrow {
+  font-size: 14px;
+  line-height: 1;
+  transition: transform var(--transition-fast);
+}
+
+.nav-cta:hover .cta-arrow {
+  transform: translate(3px, -3px);
+}
+
+/* ==========================================================================
+   SCENE 01: HERO SECTION (SPLASH VIEWPORT)
+   ========================================================================== */
+
+.hero-section {
+  width: 100%;
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 480px;
+  padding: 2.5rem 0 3.5rem;
+}
+
+.brand-monument-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex: 1 1 auto;
+}
+
+.brand-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.brand-eyebrow {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.google-rating-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 4px 12px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.star-icon {
+  color: #F59E0B;
+  font-size: 13px;
+}
+
+.rating-val {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-text-main);
+}
+
+.rating-count {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.brand-visual-hero {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.brand-typography-monument {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.monogram-svg-box {
+  width: 105px;
+  height: 85px;
+  flex-shrink: 0;
+}
+
+.authentic-logo-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.logo-path {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: drawMonogram 1.4s var(--ease-elastic-noble) forwards;
+  animation-delay: 0.2s;
+}
+
+@keyframes drawMonogram {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.brand-monument-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.title-initials {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 180px;
+  line-height: 0.75;
+  letter-spacing: -0.06em;
+  color: var(--color-primary);
+  display: block;
+  user-select: none;
+}
+
+.title-full {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+  margin-top: 4px;
+}
+
+.hero-photo-portal {
+  flex-shrink: 0;
+}
+
+.photo-frame {
+  width: 220px;
+  height: 290px;
+  border-radius: 110px 110px 16px 16px;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid var(--color-border);
+  box-shadow: var(--shadow-portal);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.photo-frame:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-portal-hover);
+}
+
+.clinic-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  filter: contrast(1.03) brightness(0.98);
+  transition: transform 0.6s ease;
+}
+
+.photo-frame:hover .clinic-photo {
+  transform: scale(1.04);
+}
+
+.photo-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(11, 43, 122, 0.92);
+  backdrop-filter: blur(10px);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.badge-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+
+.badge-role {
+  font-family: var(--font-body);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+  text-transform: uppercase;
+}
+
+.brand-proof-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.proof-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 8px 16px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-subtle);
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.proof-tag:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.tag-number {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.tag-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.hero-spine-wing {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding-left: 2rem;
+  flex: 0 0 280px;
+}
+
+.spine-caption-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  min-height: 420px;
+  justify-content: space-between;
+}
+
+.spine-vertical-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+  white-space: nowrap;
+}
+
+.spine-arrow-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 14px;
+  flex-grow: 1;
+  margin-top: 1rem;
+}
+
+.spine-arrow-indicator::before {
+  content: "";
+  display: block;
+  width: 1.5px;
+  flex-grow: 1;
+  background-color: var(--color-text-main);
+  min-height: 80px;
+}
+
+.spine-arrow-svg {
+  width: 12px;
+  height: 12px;
+  color: var(--color-text-main);
+  margin-top: -3px;
+  animation: floatDownMini 2s infinite ease-in-out;
+}
+
+@keyframes floatDownMini {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+.clinical-pillars-spine {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.pillar-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+  cursor: pointer;
+}
+
+.pillar-item:hover, .pillar-item.active {
+  border-color: var(--color-primary);
+  background: rgba(11, 43, 122, 0.03);
+  transform: translateX(-5px);
+}
+
+.pillar-num {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.pillar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pillar-title {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+}
+
+.pillar-desc {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   SCENE 02: MONUMENTAL LEFT STATEMENT
+   ========================================================================== */
+
+.hero-statement-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 6rem 0 10rem;
+  border-top: 1px solid var(--color-border);
+  position: relative;
+}
+
+.statement-main-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 860px;
+}
+
+.statement-lead-eyebrow {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+  margin-bottom: 2rem;
+}
+
+.statement-monument-headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 136px;
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  color: var(--color-primary);
+  text-transform: lowercase;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 3rem;
+}
+
+.statement-monument-headline span {
+  display: block;
+}
+
+.statement-footnote {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  max-width: 52ch;
+  line-height: 1.6;
+}
+
+.statement-side-badge {
+  padding-top: 3rem;
+}
+
+.stat-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px rgba(11, 43, 122, 0.08);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.stat-circle:hover {
+  transform: scale(1.05) rotate(5deg);
+  box-shadow: 0 12px 30px rgba(11, 43, 122, 0.16);
+}
+
+.circle-title {
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.circle-sub {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+}
+
+.circle-local {
+  font-family: var(--font-body);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   SCENE 03: DUAL WING STATEMENT (RIGHT ALIGNED + CONSTELLATION)
+   ========================================================================== */
+
+.scene-dual-wing {
+  width: 100%;
+  padding: 8rem 0 12rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.constellation-wing {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.chevron-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.glyph-mini {
+  width: 24px;
+  height: 24px;
+  color: var(--color-text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.glyph-mini:hover {
+  color: var(--color-primary);
+  transform: scale(1.3) rotate(8deg);
+}
+
+.glyph-mini svg {
+  width: 100%;
+  height: 100%;
+}
+
+.right-statement-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 760px;
+  text-align: right;
+}
+
+.statement-monument-headline.align-right {
+  align-items: flex-end;
+}
+
+.statement-footnote.align-right {
+  text-align: right;
+}
+
+/* ==========================================================================
+   SCENE 04: EDITORIAL STORIES CAROUSEL
+   ========================================================================== */
+
+.scene-stories-carousel {
+  width: 100%;
+  padding: 6rem 0 8rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.carousel-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.carousel-eyebrow {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+  margin-bottom: 1rem;
+}
+
+.carousel-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 110px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--color-primary);
+  text-transform: lowercase;
+  margin-bottom: 1.5rem;
+}
+
+.carousel-drag-hint {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.stories-track-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  padding: 1rem 0 3rem;
+  scroll-behavior: smooth;
+}
+
+.stories-track-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.stories-track {
+  display: flex;
+  gap: 32px;
+  width: max-content;
+  padding: 0 10px;
+}
+
+.story-card {
+  width: 380px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+.story-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-primary);
+}
+
+.card-image-wrap {
+  width: 100%;
+  height: 280px;
+  position: relative;
+  overflow: hidden;
+}
+
+.story-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+
+.story-card:hover .story-img {
+  transform: scale(1.06);
+}
+
+.card-tag {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(250, 249, 246, 0.94);
+  backdrop-filter: blur(8px);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+}
+
+.card-content {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-grow: 1;
+}
+
+.card-session {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.card-headline {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+  line-height: 1.3;
+}
+
+.card-text {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.card-link {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-top: auto;
+  transition: transform var(--transition-fast);
+}
+
+.card-link:hover {
+  text-decoration: underline;
+  transform: translateX(4px);
+}
+
+.inverted-funnel-separator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: 5rem;
+}
+
+.funnel-row {
+  display: flex;
+  gap: 16px;
+}
+
+.funnel-glyph {
+  width: 22px;
+  height: 22px;
+  color: var(--color-text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.funnel-glyph:hover {
+  transform: scale(1.3);
+  color: var(--color-primary);
+}
+
+.funnel-glyph svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   SCENE 05: ASYMMETRIC BENTO GRID MATRIX (7 TILES)
+   ========================================================================== */
+
+.scene-bento-grid {
+  width: 100%;
+  padding: 8rem 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.bento-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 240px;
+  gap: 24px;
+}
+
+.bento-tile {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  overflow: hidden;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: var(--shadow-subtle);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+}
+
+.bento-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+  border-color: var(--color-primary);
+}
+
+.tile-portrait {
+  grid-column: span 1;
+  grid-row: span 2;
+  padding: 0;
+}
+
+.bento-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.6s ease;
+}
+
+.tile-portrait:hover .bento-img {
+  transform: scale(1.03);
+}
+
+.tile-overlay-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(11, 43, 122, 0.95) 40%);
+  padding: 24px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tile-tag {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.tile-title-white {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.tile-text-white {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+}
+
+.tile-service {
+  grid-column: span 1;
+  grid-row: span 1;
+  justify-content: space-between;
+}
+
+.tile-icon-wrap {
+  width: 36px;
+  height: 36px;
+  color: var(--color-primary);
+  transition: transform var(--transition-fast);
+}
+
+.tile-service:hover .tile-icon-wrap {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.tile-icon-wrap svg {
+  width: 100%;
+  height: 100%;
+}
+
+.tile-service-cat {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.tile-service-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--color-text-main);
+  text-transform: uppercase;
+}
+
+.tile-service-desc {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.tile-service-link {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-top: 4px;
+  transition: transform var(--transition-fast);
+}
+
+.tile-service-link:hover {
+  text-decoration: underline;
+  transform: translateX(3px);
+}
+
+.tile-crest {
+  grid-column: span 1;
+  grid-row: span 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-secondary);
+}
+
+.crest-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-primary);
+}
+
+.crest-svg {
+  width: 70px;
+  height: 70px;
+  animation: subtleSpin 40s linear infinite;
+}
+
+@keyframes subtleSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.crest-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+}
+
+.tile-texture {
+  grid-column: span 1;
+  grid-row: span 1;
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 16px;
+}
+
+.waves-canvas {
+  width: 100%;
+  height: 120px;
+}
+
+.texture-caption {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   SCENE 06: STEPPED KINETIC TYPOGRAPHY (RE-CUPE-RAR)
+   ========================================================================== */
+
+.scene-stepped-typography {
+  width: 100%;
+  padding: 8rem 0 12rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.stepped-cascade-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  margin: 4rem 0;
+}
+
+.stepped-col {
+  display: flex;
+  align-items: flex-start;
+  transition: transform 0.1s linear;
+  will-change: transform;
+}
+
+.stepped-col.col-1 {
+  justify-content: flex-start;
+  margin-top: 0;
+}
+
+.stepped-col.col-2 {
+  justify-content: center;
+  margin-top: 6rem;
+}
+
+.stepped-col.col-3 {
+  justify-content: flex-end;
+  margin-top: 12rem;
+}
+
+.cascade-word {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 150px;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: var(--color-primary);
+  text-transform: lowercase;
+  user-select: none;
+  transition: transform 0.4s ease, color 0.4s ease;
+}
+
+.cascade-word:hover {
+  color: var(--color-primary-hover);
+  transform: scale(1.04);
+}
+
+.stepped-footnote-wrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4rem;
+}
+
+.stepped-footnote-text {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  max-width: 44ch;
+  text-align: right;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   SCENE 07: INTERACTIVE MATERNAL FOCUS TAPESTRY
+   ========================================================================== */
+
+.scene-tapestry {
+  width: 100%;
+  padding: 6rem 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.tapestry-frame {
+  width: 100%;
+  border-radius: 32px;
+  background: var(--color-bg-secondary);
+  padding: 40px;
+  border: 1px solid var(--color-border);
+}
+
+.tapestry-ambient-grid {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 320px;
+}
+
+.tapestry-panel.focal-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.focal-eye-svg {
+  width: 140px;
+  height: 200px;
+  transition: transform var(--transition-fast);
+}
+
+/* ==========================================================================
+   SCENE 08: ORBITAL ROTATING GLYPH RING (VISION SECTION)
+   ========================================================================== */
+
+.scene-orbital-vision {
+  width: 100%;
+  padding: 10rem 0;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.orbital-stage {
+  width: 600px;
+  height: 600px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orbital-center-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+  max-width: 360px;
+}
+
+.orbital-eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+  margin-bottom: 1rem;
+}
+
+.orbital-headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 72px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--color-primary);
+  text-transform: lowercase;
+  margin-bottom: 1.5rem;
+}
+
+.orbital-down-arrow {
+  font-size: 20px;
+  color: var(--color-text-main);
+  animation: floatDown 2s infinite ease-in-out;
+}
+
+@keyframes floatDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+.glyph-orbit-ring {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  border: 1px dashed var(--color-border);
+  animation: orbitSpin 60s linear infinite;
+  will-change: transform;
+}
+
+@keyframes orbitSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.orbit-item {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  top: 50%;
+  left: 50%;
+  margin: -14px;
+  color: var(--color-text-main);
+  transform: rotate(calc(var(--i) * 20deg)) translate(260px) rotate(calc(var(--i) * -20deg));
+}
+
+.orbit-item svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   SCENE 09: ASYMMETRIC CONTACT TERMINAL
+   ========================================================================== */
+
+.scene-contact-terminal {
+  width: 100%;
+  padding: 8rem 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.terminal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: flex-start;
+}
+
+.terminal-channels {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.channel-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow-subtle);
+  transition: all var(--transition-fast);
+}
+
+.channel-card:hover {
+  border-color: var(--color-primary);
+  transform: translateX(4px);
+}
+
+.channel-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  text-decoration: none;
+  color: var(--color-text-main);
+}
+
+.channel-icon {
+  font-size: 24px;
+}
+
+.channel-data {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.channel-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.channel-val {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-text-main);
+}
+
+.channel-sub {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.terminal-form-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: var(--shadow-card);
+}
+
+.minimal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+}
+
+.form-input {
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1.5px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-main);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.form-input:focus {
+  border-bottom-color: var(--color-primary);
+}
+
+.form-select {
+  cursor: pointer;
+}
+
+.submit-button {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 28px;
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 24px 0;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all var(--transition-fast);
+}
+
+.submit-button:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(11, 43, 122, 0.28);
+}
+
+.btn-text {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.btn-arrow {
+  font-size: 16px;
+  transition: transform var(--transition-fast);
+}
+
+.submit-button:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+/* ==========================================================================
+   SCENE 10: TOWERING SKYLINE FOOTER TAPESTRY
+   ========================================================================== */
+
+.scene-skyline-footer {
+  width: 100%;
+  padding: 6rem 0 4rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-meta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.footer-copy, .footer-creator {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.skyline-glyph-tapestry {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  min-height: 420px;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid var(--color-text-main);
+}
+
+.skyline-col {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 16px;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s var(--ease-elastic-noble), transform 0.8s var(--ease-elastic-noble);
+  transition-delay: var(--col-delay, 0s);
+}
+
+.scene-skyline-footer.is-revealed .skyline-col {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.skyline-col.tower {
+  color: var(--color-primary);
+}
+
+.g-item {
+  font-size: 20px;
+  color: inherit;
+  user-select: none;
+  transition: transform 0.25s ease, color 0.25s ease;
+  cursor: default;
+}
+
+.g-item:hover {
+  transform: scale(1.45) translateY(-4px);
+  color: var(--color-accent);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN BREAKPOINTS (INTENTIONAL RECONSTRUCTION)
+   ========================================================================== */
+
+/* 1. SMALL DESKTOP / TABLET LANDSCAPE (1024px) */
+@media (max-width: 1100px) {
+  .content-limit {
+    padding: 0 32px;
+  }
+  .title-initials {
+    font-size: 140px;
+  }
+  .photo-frame {
+    width: 190px;
+    height: 250px;
+  }
+  .statement-monument-headline {
+    font-size: 104px;
+  }
+  .carousel-title {
+    font-size: 88px;
+  }
+  .cascade-word {
+    font-size: 110px;
+  }
+  .bento-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: auto;
+  }
+  .tile-portrait {
+    grid-column: span 2;
+    height: 320px;
+  }
+  .tile-service {
+    grid-column: span 1;
+    min-height: 220px;
+  }
+  .tile-crest {
+    grid-column: span 1;
+    min-height: 220px;
+  }
+  .tile-texture {
+    grid-column: span 1;
+    min-height: 220px;
+  }
+}
+
+/* 2. PORTRAIT TABLET (768px - 992px) */
+@media (max-width: 992px) {
+  .hero-top-row {
+    flex-direction: column;
+    min-height: auto;
+    gap: 3rem;
+  }
+  .hero-spine-wing {
+    padding-left: 0;
+    width: 100%;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .spine-caption-box {
+    flex-direction: row;
+    min-height: auto;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .spine-vertical-text {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 11px;
+  }
+  .spine-arrow-indicator {
+    display: none;
+  }
+  .clinical-pillars-spine {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .pillar-item {
+    width: 100%;
+  }
+  .statement-monument-headline {
+    font-size: 84px;
+  }
+  .statement-side-badge {
+    display: none;
+  }
+  .scene-dual-wing {
+    flex-direction: column;
+    gap: 3rem;
+    align-items: flex-start;
+    padding: 5rem 0 7rem;
+  }
+  .right-statement-box {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .statement-monument-headline.align-right,
+  .statement-footnote.align-right {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .stepped-cascade-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+  .stepped-col.col-2, .stepped-col.col-3 {
+    margin-top: 0;
+    justify-content: flex-start;
+  }
+  .cascade-word {
+    font-size: 96px;
+  }
+  .stepped-footnote-wrap {
+    justify-content: flex-start;
+    margin-top: 2rem;
+  }
+  .stepped-footnote-text {
+    text-align: left;
+  }
+  .terminal-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .orbital-stage {
+    width: 100%;
+    height: 480px;
+  }
+  .glyph-orbit-ring {
+    width: 380px;
+    height: 380px;
+  }
+  .orbit-item {
+    transform: rotate(calc(var(--i) * 20deg)) translate(190px) rotate(calc(var(--i) * -20deg));
+  }
+  .skyline-glyph-tapestry {
+    gap: 8px;
+    min-height: 280px;
+  }
+  .g-item {
+    font-size: 14px;
+  }
+}
+
+/* 3. MOBILE SMARTPHONE VIEWPORT (<768px / 390px) */
+@media (max-width: 768px) {
+  /* DOCKED MOBILE NAVIGATION AT BOTTOM */
+  .site-nav {
+    top: auto;
+    bottom: 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: none;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+    padding: 10px 0;
+    background-color: rgba(250, 249, 246, 0.98);
+  }
+
+  .site-nav.hidden {
+    transform: translateY(115%);
+  }
+
+  .clinic-status-badge {
+    display: none;
+  }
+
+  .content-limit {
+    padding: 0 20px;
+  }
+
+  .nav-inner {
+    padding: 0 16px;
+  }
+
+  .nav-cta {
+    padding: 10px 16px;
+    font-size: 11px;
+  }
+
+  .hero-section {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .brand-header-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .brand-eyebrow {
+    font-size: 10px;
+  }
+
+  .brand-visual-hero {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .photo-frame {
+    width: 100%;
+    max-width: 320px;
+    height: 240px;
+    border-radius: 24px;
+  }
+
+  .brand-typography-monument {
+    gap: 1rem;
+  }
+
+  .monogram-svg-box {
+    width: 70px;
+    height: 55px;
+  }
+
+  .title-initials {
+    font-size: 88px;
+  }
+
+  .title-full {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+  }
+
+  .brand-proof-row {
+    gap: 8px;
+  }
+
+  .proof-tag {
+    padding: 6px 12px;
+  }
+
+  .tag-number {
+    font-size: 11px;
+  }
+
+  .tag-label {
+    font-size: 9px;
+  }
+
+  .clinical-pillars-spine {
+    grid-template-columns: 1fr;
+    margin-bottom: 2rem;
+  }
+
+  .hero-statement-row {
+    padding: 4rem 0 5rem;
+  }
+
+  .statement-lead-eyebrow {
+    font-size: 11px;
+    margin-bottom: 1.5rem;
+  }
+
+  .statement-monument-headline {
+    font-size: 54px;
+    line-height: 0.95;
+    margin-bottom: 2rem;
+  }
+
+  .statement-footnote {
+    font-size: 11px;
+  }
+
+  .story-card {
+    width: 290px;
+    border-radius: 28px;
+  }
+
+  .card-image-wrap {
+    height: 220px;
+  }
+
+  .carousel-title {
+    font-size: 64px;
+  }
+
+  .bento-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .tile-portrait {
+    grid-column: span 1;
+    height: 260px;
+  }
+
+  .tile-service, .tile-crest, .tile-texture {
+    grid-column: span 1;
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .cascade-word {
+    font-size: 68px;
+  }
+
+  .tapestry-frame {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .tapestry-ambient-grid {
+    min-height: 220px;
+  }
+
+  .focal-eye-svg {
+    width: 100px;
+    height: 150px;
+  }
+
+  .scene-orbital-vision {
+    padding: 5rem 0;
+  }
+
+  .orbital-stage {
+    height: 320px;
+  }
+
+  .orbital-center-text {
+    max-width: 220px;
+  }
+
+  .orbital-eyebrow {
+    font-size: 9px;
+    line-height: 1.3;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .orbital-headline {
+    font-size: 32px;
+    margin-bottom: 0.75rem;
+  }
+
+  .glyph-orbit-ring {
+    width: 290px;
+    height: 290px;
+  }
+
+  .orbit-item {
+    transform: rotate(calc(var(--i) * 20deg)) translate(145px) rotate(calc(var(--i) * -20deg));
+    width: 20px;
+    height: 20px;
+    margin: -10px;
+  }
+
+  .terminal-form-box {
+    padding: 24px 20px;
+  }
+
+  .footer-meta-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .skyline-glyph-tapestry {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   PREFERS-REDUCED-MOTION GUARDS (WCAG AA COMPLIANCE)
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .anim-fade-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .glyph-orbit-ring {
+    animation: none !important;
+  }
+  .crest-svg {
+    animation: none !important;
+  }
+  .status-dot {
+    animation: none !important;
+  }
+}
